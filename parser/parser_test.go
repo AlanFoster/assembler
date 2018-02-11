@@ -66,7 +66,7 @@ func TestCInstructionInfixCommand(t *testing.T) {
 }
 
 func TestCInstructionAssignment(t *testing.T) {
-	input := "A=D+1+1"
+	input := "A=D+1"
 	l := lexer.New(input)
 	p := New(l)
 	result := p.Advance()
