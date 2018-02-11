@@ -32,11 +32,15 @@ func (l *Lexer) Advance() token.Token {
 		tok = newCharToken(token.SEMICOLON, l.current)
 	case '=':
 		tok = newCharToken(token.EQUALS, l.current)
+	case '|':
+		tok = newCharToken(token.OPERATOR, l.current)
+	case '&':
+		tok = newCharToken(token.OPERATOR, l.current)
 	case '+':
 		tok = newCharToken(token.OPERATOR, l.current)
-	case '!':
-		tok = newCharToken(token.OPERATOR, l.current)
 	case '-':
+		tok = newCharToken(token.OPERATOR, l.current)
+	case '!':
 		tok = newCharToken(token.OPERATOR, l.current)
 	case 0:
 		tok = newStringToken(token.EOF, "")

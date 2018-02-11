@@ -7,14 +7,17 @@ import (
 )
 
 func TestArbitraryCharTokens(t *testing.T) {
-	input := "@+-!;"
+	input := "@;=|&+-!"
 	l := New(input)
 	expected := []token.Token{
 		{Type: token.AT, Lexeme: "@"},
+		{Type: token.SEMICOLON, Lexeme: ";"},
+		{Type: token.EQUALS, Lexeme: "="},
+		{Type: token.OPERATOR, Lexeme: "|"},
+		{Type: token.OPERATOR, Lexeme: "&"},
 		{Type: token.OPERATOR, Lexeme: "+"},
 		{Type: token.OPERATOR, Lexeme: "-"},
 		{Type: token.OPERATOR, Lexeme: "!"},
-		{Type: token.SEMICOLON, Lexeme: ";"},
 	}
 
 	for _, expectedToken := range expected {
