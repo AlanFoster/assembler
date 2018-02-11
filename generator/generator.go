@@ -67,26 +67,23 @@ func New() *Generator {
 	return &Generator{}
 }
 
-func (g *Generator) ConvertBinary(instruction ast.Node) string {
-	switch instruction := instruction.(type) {
-	case *ast.AInstruction:
-		opCode := "0"
-		value, err := strconv.ParseInt(instruction.Value, 10, 16)
-		if err != nil {
-			panic(err)
-		}
-
-		return fmt.Sprintf("%s%015b", opCode, value)
-	case *ast.CInstruction:
-		opCode := "111"
-		compCode := g.compCode(instruction.Command)
-		destCode := g.destCode(instruction.Destination)
-		jmpCode := g.jmpCode(instruction.Jump)
-
-		return fmt.Sprintf("%s%s%s%s", opCode, compCode, destCode, jmpCode)
-	default:
-		panic("Unexpected instruction")
+func (g *Generator) ConvertAInstruction(instruction *ast.AInstruction) string {
+	opCode := "0"
+	value, err := strconv.ParseInt(instruction.Value, 10, 16)
+	if err != nil {
+		panic(err)
 	}
+
+	return fmt.Sprintf("%s%015b", opCode, value)
+}
+
+func (g *Generator) ConvertCInstruction(instruction *ast.CInstruction) string {
+	opCode := "111"
+	compCode := g.compCode(instruction.Command)
+	destCode := g.destCode(instruction.Destination)
+	jmpCode := g.jmpCode(instruction.Jump)
+
+	return fmt.Sprintf("%s%s%s%s", opCode, compCode, destCode, jmpCode)
 }
 
 func (g *Generator) compCode(command ast.Command) string {
