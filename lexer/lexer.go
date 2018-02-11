@@ -26,6 +26,10 @@ func (l *Lexer) Advance() token.Token {
 	l.skipCommentsAndWhitespace()
 
 	switch l.current {
+	case '(':
+		tok = newCharToken(token.LEFT_BRACKET, l.current)
+	case ')':
+		tok = newCharToken(token.RIGHT_BRACKET, l.current)
 	case '@':
 		tok = newCharToken(token.AT, l.current)
 	case ';':

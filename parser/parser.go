@@ -38,6 +38,9 @@ func (p *Parser) ParseProgram() ast.Program {
 		case token.AT:
 			instr := p.parseAInstruction()
 			program.Instructions = append(program.Instructions, instr)
+		case token.LEFT_BRACKET:
+			instr := p.parseLInstruction()
+			program.Instructions = append(program.Instructions, instr)
 		default:
 			instr := p.parseCInstruction()
 			program.Instructions = append(program.Instructions, instr)
@@ -61,12 +64,24 @@ func (p *Parser) parseAInstruction() ast.Instruction {
 	}
 }
 
-// C ->
+// LInstruction -> LeftBrace Value RightBrace
+func (p *Parser) parseLInstruction() ast.Instruction {
+	p.advance(token.LEFT_BRACKET)
+	value := p.current
+	p.advance(token.VALUE)
+	p.advance(token.RIGHT_BRACKET)
+
+	return &ast.LInstruction{
+		Value: value.Lexeme,
+	}
+}
+
+// CInstruction ->
 // Dest = Comp; Jump
 // | Dest = Comp
 // | Comp; Jump
 // | Comp
-func (p *Parser) parseCInstruction() *ast.CInstruction {
+func (p *Parser) parseCInstruction() ast.Instruction {
 	instr := &ast.CInstruction{}
 
 	if p.isPeek(token.EQUALS) {

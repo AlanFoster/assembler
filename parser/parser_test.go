@@ -156,3 +156,20 @@ func TestCInstructionMemoryCommand(t *testing.T) {
 	assert.Equal(t, expected, result)
 	assert.Equal(t, input, result.String())
 }
+
+func TestLabel(t *testing.T) {
+	input := "(LOOP)"
+	l := lexer.New(input)
+	p := New(l)
+	result := p.ParseProgram()
+	expected := ast.Program{
+		Instructions: []ast.Instruction{
+			&ast.LInstruction{
+				Value: "LOOP",
+			},
+		},
+	}
+
+	assert.Equal(t, expected, result)
+	assert.Equal(t, input, result.String())
+}

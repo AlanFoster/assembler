@@ -86,3 +86,20 @@ func (c *CInstruction) String() string {
 
 	return out.String()
 }
+
+type LInstruction struct {
+	Node
+	Instruction
+
+	Value string
+}
+
+func (l *LInstruction) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(l.Value)
+	out.WriteString(")")
+
+	return out.String()
+}

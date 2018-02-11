@@ -7,9 +7,11 @@ import (
 )
 
 func TestArbitraryCharTokens(t *testing.T) {
-	input := "@;=|&+-!"
+	input := "()@;=|&+-!"
 	l := New(input)
 	expected := []token.Token{
+		{Type: token.LEFT_BRACKET, Lexeme: "("},
+		{Type: token.RIGHT_BRACKET, Lexeme: ")"},
 		{Type: token.AT, Lexeme: "@"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
 		{Type: token.EQUALS, Lexeme: "="},
@@ -98,6 +100,24 @@ func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
 		{Type: token.VALUE, Lexeme: "1"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
 		{Type: token.VALUE, Lexeme: "JGT"},
+		{Type: token.EOF, Lexeme: ""},
+	}
+
+	for _, expectedToken := range expected {
+		assert.Equal(t, expectedToken, l.Advance())
+	}
+}
+
+func TestLabel(t *testing.T) {
+	input := `
+		(LABEL)
+	`
+	l := New(input)
+	expected := []token.Token{
+		{Type: token.LEFT_BRACKET, Lexeme: "("},
+		{Type: token.VALUE, Lexeme: "LABEL"},
+		{Type: token.RIGHT_BRACKET, Lexeme: ")"},
+		{Type: token.EOF, Lexeme: ""},
 	}
 
 	for _, expectedToken := range expected {
