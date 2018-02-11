@@ -124,7 +124,7 @@ func (l *Lexer) readValue() string {
 }
 
 func (l *Lexer) isValue(c byte) bool {
-	return l.isDigit(c) || l.isLetter(c) || c == '_'
+	return l.isDigit(c) || l.isLetter(c) ||  c == '.' || c == '_' || c == '$'
 }
 
 func (l *Lexer) isDigit(c byte) bool {

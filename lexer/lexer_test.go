@@ -110,12 +110,12 @@ func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
 
 func TestLabel(t *testing.T) {
 	input := `
-		(LABEL)
+		($LABEL.FOO.BAR.BAZ)
 	`
 	l := New(input)
 	expected := []token.Token{
 		{Type: token.LEFT_BRACKET, Lexeme: "("},
-		{Type: token.VALUE, Lexeme: "LABEL"},
+		{Type: token.VALUE, Lexeme: "$LABEL.FOO.BAR.BAZ"},
 		{Type: token.RIGHT_BRACKET, Lexeme: ")"},
 		{Type: token.EOF, Lexeme: ""},
 	}
