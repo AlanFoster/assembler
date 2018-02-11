@@ -80,3 +80,24 @@ func TestCInstruction(t *testing.T) {
 		assert.Equal(t, expectedToken, l.Advance())
 	}
 }
+
+func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
+	input := `
+		// Comment description
+		A=D+1;JGT // Inline comment
+	`
+	l := New(input)
+	expected := []token.Token{
+		{Type: token.VALUE, Lexeme: "A"},
+		{Type: token.EQUALS, Lexeme: "="},
+		{Type: token.VALUE, Lexeme: "D"},
+		{Type: token.OPERATOR, Lexeme: "+"},
+		{Type: token.VALUE, Lexeme: "1"},
+		{Type: token.SEMICOLON, Lexeme: ";"},
+		{Type: token.VALUE, Lexeme: "JGT"},
+	}
+
+	for _, expectedToken := range expected {
+		assert.Equal(t, expectedToken, l.Advance())
+	}
+}

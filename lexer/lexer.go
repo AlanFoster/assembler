@@ -23,7 +23,7 @@ func New(source string) *Lexer {
 func (l *Lexer) Advance() token.Token {
 	var tok token.Token
 
-	l.skipWhitespace()
+	l.skipCommentsAndWhitespace()
 
 	switch l.current {
 	case '@':
@@ -68,6 +68,34 @@ func (l *Lexer) next() {
 	}
 
 	l.index++
+}
+
+func (l *Lexer) skipCommentsAndWhitespace() {
+	for {
+		l.skipWhitespace()
+		hasSkippedComments := l.skipComments()
+		if !hasSkippedComments {
+			break
+		}
+	}
+}
+
+func (l *Lexer) skipComments() bool {
+	if l.isComment() {
+		for l.current != '\n' && l.current != 0 {
+			l.next()
+		}
+		return true
+	}
+	return false
+}
+
+func (l *Lexer) isComment() bool {
+	return l.current == '/' && l.peek() == '/'
+}
+
+func (l *Lexer) peek() byte {
+	return l.source[l.index]
 }
 
 func (l *Lexer) skipWhitespace() {
