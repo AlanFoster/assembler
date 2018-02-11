@@ -9,8 +9,27 @@ type Node interface {
 	fmt.Stringer
 }
 
+type Instruction interface {
+	Node
+}
+
+type Program struct {
+	Instructions []Instruction
+}
+
+func (p *Program) String() string {
+	var out bytes.Buffer
+
+	for _, instruction := range p.Instructions {
+		out.WriteString(instruction.String())
+	}
+
+	return out.String()
+}
+
 type AInstruction struct {
 	Node
+	Instruction
 
 	Value string
 }
@@ -43,6 +62,7 @@ func (v *Command) String() string {
 
 type CInstruction struct {
 	Node
+	Instruction
 
 	Destination *Value
 	Command     Command

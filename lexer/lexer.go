@@ -23,6 +23,8 @@ func New(source string) *Lexer {
 func (l *Lexer) Advance() token.Token {
 	var tok token.Token
 
+	l.skipWhitespace()
+
 	switch l.current {
 	case '@':
 		tok = newCharToken(token.AT, l.current)
@@ -39,7 +41,11 @@ func (l *Lexer) Advance() token.Token {
 	case 0:
 		tok = newStringToken(token.EOF, "")
 	default:
-		return newStringToken(token.VALUE, l.readValue())
+		if l.isValue(l.current) {
+			return newStringToken(token.VALUE, l.readValue())
+		} else {
+			tok = newCharToken(token.INVALID, l.current)
+		}
 	}
 
 	l.next()
@@ -64,6 +70,12 @@ func (l *Lexer) next() {
 	l.index++
 }
 
+func (l *Lexer) skipWhitespace() {
+	for l.isWhitespace(l.current) {
+		l.next()
+	}
+}
+
 func (l *Lexer) readValue() string {
 	var buf bytes.Buffer
 
@@ -86,4 +98,8 @@ func (l *Lexer) isDigit(c byte) bool {
 
 func (l *Lexer) isLetter(c byte) bool {
 	return c >= '0' && c <= '9'
+}
+
+func (l *Lexer) isWhitespace(c byte) bool {
+	return c == ' ' || c == '\n' || c == '\r' || c == '\t'
 }

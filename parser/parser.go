@@ -5,6 +5,7 @@ import (
 	"github.com/alanfoster/assembler/lexer"
 	"github.com/alanfoster/assembler/token"
 	"bytes"
+	"fmt"
 )
 
 type Parser struct {
@@ -27,19 +28,29 @@ func (p *Parser) HasMoreInstructions() bool {
 	return !p.isCurrent(token.EOF)
 }
 
-func (p *Parser) Advance() ast.Node {
-	switch p.current.Type {
-	case token.AT:
-		return p.parseAInstruction()
-	default:
-		return p.parseCInstruction()
+func (p *Parser) ParseProgram() ast.Program {
+	program := ast.Program{
+		Instructions: []ast.Instruction{},
 	}
+
+	for p.HasMoreInstructions() {
+		switch p.current.Type {
+		case token.AT:
+			instr := p.parseAInstruction()
+			program.Instructions = append(program.Instructions, instr)
+		default:
+			instr := p.parseCInstruction()
+			program.Instructions = append(program.Instructions, instr)
+		}
+	}
+
+	return program
 }
 
 // @value
 //
 // Where value is a symbol or number
-func (p *Parser) parseAInstruction() *ast.AInstruction {
+func (p *Parser) parseAInstruction() ast.Instruction {
 	p.advance(token.AT)
 
 	value := p.current.Lexeme
@@ -137,7 +148,7 @@ func (p *Parser) isPeek(tokenType token.Type) bool {
 
 func (p *Parser) advance(tokenType token.Type) {
 	if !p.isCurrent(tokenType) {
-		panic("Unexpected token")
+		panic(fmt.Errorf("expected token type %s, instead got: %+v", tokenType, p.current))
 	}
 
 	p.nextToken()
