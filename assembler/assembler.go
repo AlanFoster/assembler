@@ -7,6 +7,6 @@ func New() *Assembler {
 	return &Assembler{}
 }
 
-func (a *Assembler) Convert(s string) string {
+func (a *Assembler) Convert(source string) string {
 	return "0000000000000011"
 }
