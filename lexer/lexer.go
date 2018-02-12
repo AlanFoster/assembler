@@ -106,7 +106,12 @@ func (l *Lexer) isComment() bool {
 }
 
 func (l *Lexer) peek() byte {
-	return l.source[l.index]
+	if l.index < len(l.source) {
+		return l.source[l.index]
+	} else {
+		return 0 // Null byte
+	}
+
 }
 
 func (l *Lexer) skipWhitespace() {

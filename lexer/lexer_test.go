@@ -118,7 +118,8 @@ func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
 	input := `
 		// Comment description
 		A=D+1;JGT // Inline comment
-	`
+		// Trailing comment/
+		/`
 	l := New(input)
 	expected := []token.Token{
 		{Type: token.VALUE, Lexeme: "A"},
@@ -128,6 +129,7 @@ func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
 		{Type: token.VALUE, Lexeme: "1"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
 		{Type: token.JUMP, Lexeme: "JGT"},
+		{Type: token.INVALID, Lexeme: "/"},
 		{Type: token.EOF, Lexeme: ""},
 	}
 
