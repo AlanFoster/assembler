@@ -50,7 +50,10 @@ func (l *Lexer) Advance() token.Token {
 		tok = newStringToken(token.EOF, "")
 	default:
 		if l.isValue(l.current) {
-			return newStringToken(token.VALUE, l.readValue())
+			value := l.readValue()
+			tokenType := token.MapValue(value)
+
+			return newStringToken(tokenType, value)
 		} else {
 			tok = newCharToken(token.INVALID, l.current)
 		}

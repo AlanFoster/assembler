@@ -54,6 +54,34 @@ func TestValueThenChar(t *testing.T) {
 	}
 }
 
+func TestJump(t *testing.T) {
+	input := `
+		JGT
+		JEQ
+		JGE
+		JLT
+		JNE
+		JLE
+		JMP
+	`
+	l := New(input)
+	expected := []token.Token{
+		{Type: token.JUMP, Lexeme: "JGT"},
+		{Type: token.JUMP, Lexeme: "JEQ"},
+		{Type: token.JUMP, Lexeme: "JGE"},
+		{Type: token.JUMP, Lexeme: "JLT"},
+		{Type: token.JUMP, Lexeme: "JNE"},
+		{Type: token.JUMP, Lexeme: "JLE"},
+		{Type: token.JUMP, Lexeme: "JMP"},
+
+		{Type: token.EOF, Lexeme: ""},
+	}
+
+	for _, expectedToken := range expected {
+		assert.Equal(t, expectedToken, l.Advance())
+	}
+}
+
 func TestAInstruction(t *testing.T) {
 	input := "@1"
 	l := New(input)
@@ -78,7 +106,7 @@ func TestCInstruction(t *testing.T) {
 		{Type: token.OPERATOR, Lexeme: "+"},
 		{Type: token.VALUE, Lexeme: "1"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
-		{Type: token.VALUE, Lexeme: "JGT"},
+		{Type: token.JUMP, Lexeme: "JGT"},
 	}
 
 	for _, expectedToken := range expected {
@@ -99,7 +127,7 @@ func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
 		{Type: token.OPERATOR, Lexeme: "+"},
 		{Type: token.VALUE, Lexeme: "1"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
-		{Type: token.VALUE, Lexeme: "JGT"},
+		{Type: token.JUMP, Lexeme: "JGT"},
 		{Type: token.EOF, Lexeme: ""},
 	}
 

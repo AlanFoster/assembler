@@ -4,9 +4,9 @@ package token
 
 import "fmt"
 
-const _Type_name = "VALUELEFT_BRACKETRIGHT_BRACKETATEQUALSOPERATORSEMICOLONINVALIDEOF"
+const _Type_name = "VALUELEFT_BRACKETRIGHT_BRACKETATEQUALSOPERATORSEMICOLONINVALIDJUMPEOF"
 
-var _Type_index = [...]uint8{0, 5, 17, 30, 32, 38, 46, 55, 62, 65}
+var _Type_index = [...]uint8{0, 5, 17, 30, 32, 38, 46, 55, 62, 66, 69}
 
 func (i Type) String() string {
 	if i < 0 || i >= Type(len(_Type_index)-1) {

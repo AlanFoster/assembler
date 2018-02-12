@@ -111,7 +111,7 @@ func (p *Parser) parseDest() *ast.Value {
 // This could ensure a valid Jump location, but it does not.
 func (p *Parser) parseJump() *ast.Value {
 	current := p.current
-	p.advance(token.VALUE)
+	p.advance(token.JUMP)
 	return &ast.Value{Value: current.Lexeme}
 }
 

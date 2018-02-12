@@ -29,7 +29,7 @@ func (a *Assembler) Convert(source string) string {
 
 // Builds the symbol table containing labels and their corresponding
 // ROM locations, as a first pass from the source file.
-func (a *Assembler) buildSymbolTable(program ast.Program) *symboltable.SymbolTable {
+func (a *Assembler) buildSymbolTable(program ast.Program) symboltable.SymbolTable {
 	st := symboltable.New()
 
 	// Track the ROM index. This will be incremented for each known instruction that
@@ -58,7 +58,7 @@ func (a *Assembler) buildSymbolTable(program ast.Program) *symboltable.SymbolTab
 // pre-defined symbols, as well as user defined labels.
 //
 // In this second pass, we can now begin to generate the binary representation
-func (a *Assembler) generateBinary(program ast.Program, st *symboltable.SymbolTable) string {
+func (a *Assembler) generateBinary(program ast.Program, st symboltable.SymbolTable) string {
 	g := generator.New()
 
 	// A point to the next free memory slot for variable assignment
