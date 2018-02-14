@@ -13,6 +13,7 @@ The width of each instruction is 16 bits, and the source machine only supports t
 
 ### A Instruction
 
+The 'A' instruction can be used to hold either a data value, or be used as a reference to a memory location.
 The 'A' Instruction is represented in assembly as:
 
 ```
@@ -30,9 +31,17 @@ This will load the value 1337 into the A register. The binary representation for
 +-------- Representation for the 'A' Instruction
 ```
 
+The assembler also supports symbolic variables, and will be allocated the next free word in memory:
+
+```
+@myVariable     // Create a new variable
+M = 0           // Assign the value 0
+```
+
 ### C Instruction
 
-Whilst a 'C' Instruction represented in its symbolic representation:
+The 'C' Instruction is more complex, and can perform Addition, Subtraction, and conditional Jumps.
+Represented in its symbolic representation:
 
 ```
 D=D-M;JLT
@@ -54,9 +63,22 @@ The binary representation for this:
 |      |
 |      +- Representation for the command D-M
 |
-+-------- Representation for the 'C' instruction
++------ Representation for the 'C' instruction
+```
+
+### L Instruction
+
+The assembler also supports a pseudo instruction that is reserved for labels. Labels are useful as they can be
+used to to jump specific program locations:
 
 ```
+(LOOP)          // Mark the next intruction as being called 'LOOP'
+    @LOOP       // Load the ROM location of LOOP in to our register
+    0; JMP      // Unconditionally Jump. i.e. Infinitely loop.
+```
+
+The L Instruction does not emit any binary, instead the assembler will inline the ROM locations of the target
+instruction
 
 ## Implementation
 
@@ -69,6 +91,10 @@ lexer -> Parser -> Generator
 This approach isn't specifically needed to implement an assembler, but the intermediate representation definitely
 made the code generation nicer.
 
+Labels are handled via a first initial pass of the assembly code, and the mapping of labels to ROM locations is stored
+in a symbol table. After the ROM location of labels has been identified, the a secondary pass is used to generate
+the real binary representation of our symbol assembly code.
+
 ## Example
 
 ### Input File
@@ -76,22 +102,26 @@ made the code generation nicer.
 Given an assembly program that adds numbers:
 
 ```
-@0
-D=M
-@1
-D=D-M
-@10
-D;JGT
-@1
-D=M
-@12
-0;JMP
-@0
-D=M
-@2
-M=D
-@14
-0;JMP
+// Computes R2 = max(R0, R1)  (R0,R1,R2 refer to RAM[0],RAM[1],RAM[2])
+   @R0
+   D=M              // D = first number
+   @R1
+   D=D-M            // D = first number - second number
+   @OUTPUT_FIRST
+   D;JGT            // if D>0 (first is greater) goto output_first
+   @R1
+   D=M              // D = second number
+   @OUTPUT_D
+   0;JMP            // goto output_d
+(OUTPUT_FIRST)
+   @R0
+   D=M              // D = first number
+(OUTPUT_D)
+   @R2
+   M=D              // M[2] = D (greatest number)
+(INFINITE_LOOP)
+   @INFINITE_LOOP
+   0;JMP            // infinite loop
 ```
 
 ## Output File
