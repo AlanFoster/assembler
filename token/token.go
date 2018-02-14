@@ -5,6 +5,7 @@ type Type int
 //go:generate stringer -type=Type
 const (
 	VALUE     Type = iota
+	NUMBER
 	LEFT_BRACKET
 	RIGHT_BRACKET
 	AT

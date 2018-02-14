@@ -83,11 +83,13 @@ func TestJump(t *testing.T) {
 }
 
 func TestAInstruction(t *testing.T) {
-	input := "@1"
+	input := "@1234 @Constant"
 	l := New(input)
 	expected := []token.Token{
 		{Type: token.AT, Lexeme: "@"},
-		{Type: token.VALUE, Lexeme: "1"},
+		{Type: token.NUMBER, Lexeme: "1234"},
+		{Type: token.AT, Lexeme: "@"},
+		{Type: token.VALUE, Lexeme: "Constant"},
 		{Type: token.EOF, Lexeme: ""},
 	}
 
@@ -104,7 +106,7 @@ func TestCInstruction(t *testing.T) {
 		{Type: token.EQUALS, Lexeme: "="},
 		{Type: token.VALUE, Lexeme: "D"},
 		{Type: token.OPERATOR, Lexeme: "+"},
-		{Type: token.VALUE, Lexeme: "1"},
+		{Type: token.NUMBER, Lexeme: "1"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
 		{Type: token.JUMP, Lexeme: "JGT"},
 	}
@@ -126,7 +128,7 @@ func TestCInstructionWithWhitespaceAndComments(t *testing.T) {
 		{Type: token.EQUALS, Lexeme: "="},
 		{Type: token.VALUE, Lexeme: "D"},
 		{Type: token.OPERATOR, Lexeme: "+"},
-		{Type: token.VALUE, Lexeme: "1"},
+		{Type: token.NUMBER, Lexeme: "1"},
 		{Type: token.SEMICOLON, Lexeme: ";"},
 		{Type: token.JUMP, Lexeme: "JGT"},
 		{Type: token.INVALID, Lexeme: "/"},

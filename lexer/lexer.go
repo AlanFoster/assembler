@@ -49,7 +49,10 @@ func (l *Lexer) Advance() token.Token {
 	case 0:
 		tok = newStringToken(token.EOF, "")
 	default:
-		if l.isValue(l.current) {
+		if l.isDigit(l.current) {
+			value := l.readNumber()
+			return newStringToken(token.NUMBER, value)
+		} else if l.isValue(l.current) {
 			value := l.readValue()
 			tokenType := token.MapValue(value)
 
@@ -131,17 +134,28 @@ func (l *Lexer) readValue() string {
 	return buf.String()
 }
 
+func (l *Lexer) readNumber() string {
+	var buf bytes.Buffer
+
+	for l.isDigit(l.current) {
+		buf.WriteByte(l.current)
+		l.next()
+	}
+
+	return buf.String()
+}
+
 func (l *Lexer) isValue(c byte) bool {
-	return l.isDigit(c) || l.isLetter(c) ||  c == '.' || c == '_' || c == '$'
+	return l.isDigit(c) || l.isLetter(c) || c == '.' || c == '_' || c == '$'
 }
 
 func (l *Lexer) isDigit(c byte) bool {
-	return c >= 'a' && c <= 'z' ||
-		c >= 'A' && c <= 'Z'
+	return c >= '0' && c <= '9'
 }
 
 func (l *Lexer) isLetter(c byte) bool {
-	return c >= '0' && c <= '9'
+	return c >= 'a' && c <= 'z' ||
+		c >= 'A' && c <= 'Z'
 }
 
 func (l *Lexer) isWhitespace(c byte) bool {

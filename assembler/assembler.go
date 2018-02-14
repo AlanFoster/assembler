@@ -8,7 +8,6 @@ import (
 	"github.com/alanfoster/assembler/ast"
 	"github.com/alanfoster/assembler/symboltable"
 	"fmt"
-	"strconv"
 )
 
 type Assembler struct {
@@ -75,19 +74,14 @@ func (a *Assembler) generateBinary(program ast.Program, st symboltable.SymbolTab
 		case *ast.LInstruction:
 			// Labels do not get output to ROM, they are pseudo instructions
 		case *ast.AInstruction:
-			// TODO: Unexpected mutation is unexpected
-			if isVariable(instruction.Value) {
-				newVariable := !st.Contains(instruction.Value)
-				if newVariable {
-					st.Add(instruction.Value, freeMemorySlotIndex)
-					freeMemorySlotIndex++
-				}
+			variable, isVariable := instruction.Value.(*ast.Variable)
+			if isVariable && !st.Contains(variable.Name) {
 
-				address := st.Get(instruction.Value)
-				instruction.Value = strconv.Itoa(address)
+				st.Add(variable.Name, freeMemorySlotIndex)
+				freeMemorySlotIndex++
 			}
 
-			binary = append(binary, g.ConvertAInstruction(instruction))
+			binary = append(binary, g.ConvertAInstruction(instruction, st))
 		case *ast.CInstruction:
 			binary = append(binary, g.ConvertCInstruction(instruction))
 		default:
@@ -96,10 +90,4 @@ func (a *Assembler) generateBinary(program ast.Program, st symboltable.SymbolTab
 	}
 
 	return strings.Join(binary, "\n")
-}
-
-// TODO: This should be encoded within the AST
-func isVariable(value string) bool {
-	isDigit := value[0] >= '0' && value[0] <= '9'
-	return !isDigit
 }

@@ -2,8 +2,8 @@ package generator
 
 import (
 	"github.com/alanfoster/assembler/ast"
-	"strconv"
 	"fmt"
+	"github.com/alanfoster/assembler/symboltable"
 )
 
 const nullDestCode = "000"
@@ -67,14 +67,20 @@ func New() *Generator {
 	return &Generator{}
 }
 
-func (g *Generator) ConvertAInstruction(instruction *ast.AInstruction) string {
-	opCode := "0"
-	value, err := strconv.ParseInt(instruction.Value, 10, 16)
-	if err != nil {
-		panic(err)
+func (g *Generator) ConvertAInstruction(instruction *ast.AInstruction, st symboltable.SymbolTable) string {
+	var number int
+
+	switch value := instruction.Value.(type) {
+	case *ast.Number:
+		number = value.Value
+	case *ast.Variable:
+		number = st[value.Name]
+	default:
+		panic(fmt.Errorf("unexpected value %v", value))
 	}
 
-	return fmt.Sprintf("%s%015b", opCode, value)
+	opCode := "0"
+	return fmt.Sprintf("%s%015b", opCode, number)
 }
 
 func (g *Generator) ConvertCInstruction(instruction *ast.CInstruction) string {

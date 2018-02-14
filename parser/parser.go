@@ -6,6 +6,7 @@ import (
 	"github.com/alanfoster/assembler/token"
 	"bytes"
 	"fmt"
+	"strconv"
 )
 
 type Parser struct {
@@ -55,9 +56,19 @@ func (p *Parser) ParseProgram() ast.Program {
 // Where value is a symbol or number
 func (p *Parser) parseAInstruction() ast.Instruction {
 	p.advance(token.AT)
+	var value ast.AInstructionValue
 
-	value := p.current.Lexeme
-	p.advance(token.VALUE)
+	if p.isCurrent(token.NUMBER) {
+		number, err := strconv.ParseInt(p.current.Lexeme, 10, 16)
+		if err != nil {
+			panic(err)
+		}
+		p.advance(token.NUMBER)
+		value = &ast.Number{Value: int(number)}
+	} else if p.isCurrent(token.VALUE) {
+		value = &ast.Variable{Name: p.current.Lexeme}
+		p.advance(token.VALUE)
+	}
 
 	return &ast.AInstruction{
 		Value: value,
@@ -115,7 +126,7 @@ func (p *Parser) parseJump() *ast.Value {
 	return &ast.Value{Value: current.Lexeme}
 }
 
-// Representation is somewhat cheaty, to make lookup easier.
+// Representation is somewhat cheaty, to make lookup easier later.
 //
 // Command ->
 // 	operator Value
@@ -128,24 +139,32 @@ func (p *Parser) parseCommand() ast.Command {
 	if p.isCurrent(token.OPERATOR) {
 		out.WriteString(p.current.Lexeme)
 		p.advance(token.OPERATOR)
-		out.WriteString(p.current.Lexeme)
-		p.advance(token.VALUE)
+		out.WriteString(p.parseNumberOrValue().Lexeme)
 		return ast.Command{Value: out.String()}
 	}
 
 	// Reading the value
-	out.WriteString(p.current.Lexeme)
-	p.advance(token.VALUE)
+	out.WriteString(p.parseNumberOrValue().Lexeme)
 
 	// Handle Infix
-	if (p.isCurrent(token.OPERATOR)) {
+	if p.isCurrent(token.OPERATOR) {
 		out.WriteString(p.current.Lexeme)
 		p.advance(token.OPERATOR)
-		out.WriteString(p.current.Lexeme)
-		p.advance(token.VALUE)
+		out.WriteString(p.parseNumberOrValue().Lexeme)
 	}
 
 	return ast.Command{Value: out.String()}
+}
+
+func (p *Parser) parseNumberOrValue() token.Token {
+	s := p.current
+	if p.isCurrent(token.NUMBER) {
+		p.advance(token.NUMBER)
+	} else {
+		p.advance(token.VALUE)
+	}
+
+	return s
 }
 
 func (p *Parser) nextToken() {

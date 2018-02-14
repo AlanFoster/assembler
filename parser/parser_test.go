@@ -15,7 +15,7 @@ func TestAInstruction(t *testing.T) {
 	expected := ast.Program{
 		Instructions: []ast.Instruction{
 			&ast.AInstruction{
-				Value: "1337",
+				Value: &ast.Number{Value: 1337},
 			},
 		},
 	}

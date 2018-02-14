@@ -3,6 +3,7 @@ package ast
 import (
 	"fmt"
 	"bytes"
+	"strconv"
 )
 
 type Node interface {
@@ -27,11 +28,33 @@ func (p *Program) String() string {
 	return out.String()
 }
 
+type AInstructionValue interface {
+	Node
+}
+
+type Number struct {
+	AInstructionValue
+	Value int
+}
+
+func (c Number) String() string {
+	return strconv.Itoa(c.Value)
+}
+
+type Variable struct {
+	AInstructionValue
+	Name string
+}
+
+func (v Variable) String() string {
+	return v.Name
+}
+
 type AInstruction struct {
 	Node
 	Instruction
 
-	Value string
+	Value AInstructionValue
 }
 
 func (a *AInstruction) String() string {
