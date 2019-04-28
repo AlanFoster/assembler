@@ -2,6 +2,53 @@
 
 A basic assembler for the Hack symbolic assembly language written in Go.
 
+## What is it?
+
+Following the through the book `The Elements of Computing Systems`, this project is part of a larger suite of tools:
+
+       +------------+     +-------------+     +------------+
+       |    Jack    |     |   Virtual   |     |            |
+       |  Compiler  +---->+   Machine   +---->+  Assembler |
+       |            |     |  Translator |     |            |
+       +------------+     +-------------+     +------------+
+
+### Jack Compiler
+
+The [Jack Compiler](https://github.com/AlanFoster/jackcompiler) converts the high level Jack language into an
+intermediate representation which can be ran on a platform agnostic virtual machine. The syntax of Jack is similar to
+Java. The virtual machine instructions output by this compiler are stack based, and is modeled after the Java Virtual
+Machine (JVM).
+
+This project is written with [ANTLR](https://www.antlr.org/) and Python.
+
+### Hack Virtual Machine Translator
+
+The Jack Compiler outputs virtual machine code. These virtual machine instructions can be compiled using the
+[hack virtual machine translator](https://github.com/AlanFoster/hackvirtualmachine). At a high level this tool converts
+virtual machine instructions into symbolic assembly commands which can then be passed to an assembler.
+
+This project is written with [ANTLR](https://www.antlr.org/) and Python.
+
+### Hack Assembler
+
+The [Hack Assembler](https://github.com/AlanFoster/hackassembler) takes the symbolic representation of assembly
+commands, and converts these instructions into its binary representation using the Hack Assembler. This can then be
+loaded on to the Hack platform's ROM and executed.
+
+This project is written with Go.
+
+## Project links
+
+This project is part of a larger suite of tools:
+
+- [Jack Compiler](https://github.com/AlanFoster/jackcompiler) converts the high level Jack language into an
+  intermediate representation which can be ran on a platform agnostic virtual machine. Written with [Antlr](https://www.antlr.org/)
+  and Python.
+- [Hack Virtual Machine Translator](https://github.com/AlanFoster/hackvirtualmachine) - A virtual machine translator
+  for the hack assembly language written with [Antlr](https://www.antlr.org/) and Python.
+- [Hack Assembler](https://github.com/AlanFoster/hackassembler) - A basic assembler for the Hack symbolic assembly
+  language written in Go.
+
 ## Running
 
 > go run main.go --entry-file ./your-file.asm --output-file ./your-file.hack
